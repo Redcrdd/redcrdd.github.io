@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Redcrdd — Create. Launch. Grow.</title>
+<meta name="description" content="Redcrdd is a creative platform for building, launching and growing ideas.">
+<style>
+:root{--bg:#07070b;--fg:#f4f4f7;--mute:rgba(244,244,247,.62);--line:rgba(255,255,255,.12);--glass:rgba(255,255,255,.06);--a:#ff3b4e;--b:#ff8a5b;--c:#7a5cff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+#liquid{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:blur(40px) saturate(140%);opacity:.9}
+main,header,footer{position:relative;z-index:1}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:16px 24px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);background:rgba(7,7,11,.35);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;gap:10px;align-items:center}
+.logo i{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 18px var(--a)}
+.links{display:flex;gap:28px;font-size:14px;color:var(--mute)}
+.links a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.btn.primary{background:linear-gradient(120deg,var(--a),var(--b));color:#fff;box-shadow:0 14px 40px rgba(255,59,78,.35)}
+.btn.ghost{background:rgba(255,255,255,.07);border-color:var(--line);color:var(--fg);backdrop-filter:blur(10px)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 60px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);border:1px solid var(--line);padding:7px 14px;border-radius:999px;background:var(--glass)}
+h1{font-size:clamp(44px,7.4vw,96px);line-height:.98;letter-spacing:-.045em;font-weight:800;margin:22px 0}
+h1 em{font-style:normal;background:linear-gradient(120deg,var(--a),var(--b),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(16px,1.6vw,19px);color:var(--mute);max-width:520px;line-height:1.6}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.hero-stage{position:relative;height:min(520px,70vh)}
+#orb{width:100%;height:100%;display:block}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.links{display:none}.hero-stage{height:360px}}
+
+/* Marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:22px 0;background:rgba(255,255,255,.02)}
+.track{display:flex;gap:56px;width:max-content;animation:scroll 28s linear infinite;font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--mute)}
+.track span{white-space:nowrap}
+.track span:nth-child(odd){color:var(--fg)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* Pinned story */
+.pin{height:320vh;position:relative}
+.pin-inner{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+.pin-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;width:100%}
+.big{font-size:clamp(32px,4.6vw,60px);font-weight:800;letter-spacing:-.035em;line-height:1.05}
+.step{position:absolute;top:0;left:0;opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.2,.8,.2,1);max-width:480px}
+.step.on{opacity:1;transform:none}
+.pin-stage{position:relative;height:min(480px,62vh);border-radius:32px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+#pinCanvas{width:100%;height:100%;display:block}
+.progress{height:2px;background:var(--line);border-radius:2px;margin-top:26px;overflow:hidden;max-width:400px;position:absolute;bottom:-40px;left:0;right:0}
+.progress i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--a),var(--b));width:0}
+@media(max-width:860px){
+  .pin{height:auto}
+  .pin-inner{position:relative;height:auto;padding:80px 0}
+  .pin-grid{grid-template-columns:1fr;gap:40px}
+  .step{position:relative;opacity:1;transform:none}
+  .step:not(:first-child){display:none}
+  .progress{display:none}
+}
+
+/* Sections */
+section.block{padding:140px 0}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.h2{font-size:clamp(34px,5vw,64px);font-weight:800;letter-spacing:-.04em;line-height:1.02;margin:16px 0 18px}
+.sub{color:var(--mute);font-size:18px;line-height:1.6;max-width:600px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.split.rev .viz{order:-1}
+.viz{position:relative;height:420px;border-radius:32px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.viz canvas{width:100%;height:100%;display:block}
+@media(max-width:860px){.split{grid-template-columns:1fr;gap:36px}.split.rev .viz{order:0}.viz{height:320px}}
+
+.bullets{list-style:none;margin-top:28px;display:grid;gap:14px}
+.bullets li{display:flex;gap:14px;align-items:flex-start;color:var(--mute);line-height:1.5}
+.bullets b{color:var(--fg);font-weight:600}
+.dot{flex:0 0 auto;width:10px;height:10px;border-radius:50%;margin-top:7px;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 14px var(--a)}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px}
+.card{padding:30px;border-radius:28px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:border-color .4s;position:relative;overflow:hidden}
+.card.rv.in:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.28)}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(360px circle at var(--x,50%) var(--y,0%),rgba(255,59,78,.2),transparent 45%);opacity:0;transition:opacity .4s;pointer-events:none}
+.card:hover::before{opacity:1}
+.card .n{font-size:13px;color:var(--mute);font-weight:700;letter-spacing:.1em}
+.card h3{font-size:24px;letter-spacing:-.02em;margin:40px 0 10px;font-weight:700}
+.card p{color:var(--mute);line-height:1.6;font-size:15px}
+@media(max-width:900px){.cards{grid-template-columns:1fr}}
+
+/* CTA */
+.cta{border-radius:40px;padding:90px 40px;text-align:center;border:1px solid var(--line);background:radial-gradient(900px 400px at 50% 0%,rgba(255,59,78,.25),transparent 60%),radial-gradient(700px 400px at 100% 100%,rgba(122,92,255,.25),transparent 60%),rgba(255,255,255,.03);overflow:hidden;position:relative}
+.cta h2{font-size:clamp(36px,6vw,78px);font-weight:800;letter-spacing:-.045em;line-height:1}
+.form{display:flex;gap:10px;max-width:520px;margin:36px auto 0;padding:8px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.form input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--fg);font-size:16px;font-family:inherit;padding:0 16px}
+.form input::placeholder{color:var(--mute)}
+.msg{margin-top:14px;color:var(--mute);font-size:14px;min-height:20px}
+@media(max-width:560px){.form{flex-direction:column;border-radius:24px}.form input{padding:14px 16px}}
+
+footer{padding:60px 0 50px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+
+/* Reveal */
+.rv{opacity:0;transform:translateY(46px);filter:blur(10px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1),filter 1s ease}
+.rv.in{opacity:1;transform:none;filter:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}}
+</style>
+</head>
+<body>
+<canvas id="liquid"></canvas>
+
+<nav>
+  <a class="logo" href="#top"><i></i>Redcrdd</a>
+  <div class="links"><a href="#work">Work</a><a href="#process">Process</a><a href="#platform">Platform</a><a href="#contact">Contact</a></div>
+  <a class="btn primary" href="#contact">Get started</a>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="kicker rv">● Now building for creators &amp; teams</span>
+        <h1 class="rv d1">Create. Launch.<br><em>Grow.</em></h1>
+        <p class="lead rv d2">Redcrdd is a platform for turning ideas into finished products, from first sketch to launch, with the motion design to make them feel premium.</p>
+        <div class="ctas rv d3">
+          <a class="btn primary" href="#contact">Start a project</a>
+          <a class="btn ghost" href="#work">See the work</a>
+        </div>
+      </div>
+      <div class="hero-stage rv d2"><canvas id="orb"></canvas></div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div class="track" id="track"></div></div>
+
+  <section class="pin" id="process">
+    <div class="pin-inner">
+      <div class="wrap pin-grid">
+        <div style="position:relative;min-height:300px">
+          <div class="step on" data-step="0">
+            <div class="eyebrow">01 — Discover</div>
+            <h2 class="big" style="margin-top:14px">We start with the idea, not the template.</h2>
+            <p class="sub" style="margin-top:18px">We map your goals, your audience and the one thing that makes you different.</p>
+          </div>
+          <div class="step" data-step="1">
+            <div class="eyebrow">02 — Design</div>
+            <h2 class="big" style="margin-top:14px">Motion that tells the story.</h2>
+            <p class="sub" style="margin-top:18px">Every scroll, transition and glow is planned, so the page feels alive without slowing down.</p>
+          </div>
+          <div class="step" data-step="2">
+            <div class="eyebrow">03 — Launch</div>
+            <h2 class="big" style="margin-top:14px">Ship fast, then keep growing.</h2>
+            <p class="sub" style="margin-top:18px">Your site goes live in days, with clean code that loads quickly on any phone.</p>
+          </div>
+          <div class="progress"><i id="pbar"></i></div>
+        </div>
+        <div class="pin-stage"><canvas id="pinCanvas"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="wrap">
+      <div class="rv">
+        <div class="eyebrow">What we build</div>
+        <h2 class="h2">Three things,<br>done beautifully.</h2>
+      </div>
+      <div class="cards">
+        <div class="card rv d1"><div class="n">01</div><h3>Brand worlds</h3><p>Identity, color and motion that work together across screens, print and social.</p></div>
+        <div class="card rv d2"><div class="n">02</div><h3>Websites &amp; apps</h3><p>Fast, responsive products with scroll-driven storytelling and clean, accessible code.</p></div>
+        <div class="card rv d3"><div class="n">03</div><h3>Creator platforms</h3><p>Tools for publishing, sharing and earning, designed to feel calm and premium.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="platform" style="padding-top:40px">
+    <div class="wrap split">
+      <div class="rv">
+        <div class="eyebrow">The platform</div>
+        <h2 class="h2">Everything in one calm place.</h2>
+        <p class="sub">Redcrdd brings your pages, media and visitors together, so you spend time creating instead of configuring.</p>
+        <ul class="bullets">
+          <li><span class="dot"></span><span><b>Scroll-driven pages.</b> Sections that animate as people move through them.</span></li>
+          <li><span class="dot"></span><span><b>Liquid backgrounds.</b> Color that shifts with every scroll.</span></li>
+          <li><span class="dot"></span><span><b>Mobile-first.</b> Smooth on phones, with haptic-style feedback where supported.</span></li>
+        </ul>
+      </div>
+      <div class="viz rv d2"><canvas id="vizA"></canvas></div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:40px">
+    <div class="wrap split rev">
+      <div class="viz rv"><canvas id="vizB"></canvas></div>
+      <div class="rv d1">
+        <div class="eyebrow">Built to convert</div>
+        <h2 class="h2">Clear paths. Strong calls to action.</h2>
+        <p class="sub">Every page is designed around what the visitor should do next, then tested on real devices before launch.</p>
+        <ul class="bullets">
+          <li><span class="dot"></span><span><b>Fast load.</b> Lightweight visuals that run smoothly.</span></li>
+          <li><span class="dot"></span><span><b>Accessible.</b> Readable text, keyboard support and reduced-motion settings.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="wrap">
+      <div class="cta rv">
+        <div class="eyebrow">Ready when you are</div>
+        <h2 style="margin-top:14px">Let's build<br>something premium.</h2>
+        <p class="sub" style="margin:20px auto 0;text-align:center">Leave your email and tell us what you want to make. We reply within two working days.</p>
+        <form class="form" id="form">
+          <input type="email" id="email" placeholder="you@email.com" required aria-label="Email">
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+        <div class="msg" id="msg"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="logo"><i></i>Redcrdd</div>
+    <div>© <span id="yr"></span> Redcrdd. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var EMAIL = "hello@example.com"; // change this to your real email
+
+  var $ = function(id){ return document.getElementById(id); };
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var clamp = function(v,a,b){ return Math.max(a, Math.min(b, v)); };
+  var lerp = function(a,b,t){ return a + (b - a) * t; };
+  var PAL = [[255,59,78],[255,138,91],[122,92,255],[255,184,77]];
+
+  function fit(cv){
+    var r = cv.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, Math.round(r.width * dpr));
+    cv.height = Math.max(1, Math.round(r.height * dpr));
+    var ctx = cv.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return ctx;
+  }
+
+  /* Liquid background */
+  var liquid = $("liquid"), lq = liquid.getContext("2d");
+  var lp = 0, lpT = 0;
+  function resizeLiquid(){
+    liquid.width = Math.round(innerWidth / 4);
+    liquid.height = Math.round(innerHeight / 4);
+  }
+  function drawLiquid(t){
+    lp += (lpT - lp) * 0.06;
+    var w = liquid.width, h = liquid.height;
+    lq.clearRect(0, 0, w, h);
+    for(var i = 0; i < PAL.length; i++){
+      var c = PAL[(i + Math.floor(lp * 4)) % PAL.length];
+      var x = w * (0.5 + 0.38 * Math.sin(t * 0.00018 + i * 1.7));
+      var y = h * (0.5 + 0.34 * Math.cos(t * 0.00015 + i * 2.3)) + lp * h * (i % 2 ? 0.5 : -0.5);
+      var r = Math.min(w, h) * (0.42 + 0.08 * Math.sin(t * 0.0004 + i));
+      var g = lq.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, "rgba(" + c + ",0.55)");
+      g.addColorStop(1, "rgba(" + c + ",0)");
+      lq.fillStyle = g;
+      lq.fillRect(0, 0, w, h);
+    }
+  }
+  resizeLiquid();
+
+  /* Hero orb */
+  var orbCv = $("orb"), og = null;
+  function drawOrb(t){
+    if(!og) og = fit(orbCv);
+    var r = orbCv.getBoundingClientRect();
+    var W = r.width, H = r.height, cx = W / 2, cy = H / 2;
+    og.clearRect(0, 0, W, H);
+    var base = Math.min(W, H) * 0.28;
+    for(var k = 0; k < 9; k++){
+      var f = k / 9;
+      var rad = base * (1 + f * 1.6) + Math.sin(t * 0.001 + k) * 8;
+      var sq = 1 + 0.12 * Math.sin(t * 0.0007 + k * 0.8);
+      og.save();
+      og.translate(cx, cy);
+      og.rotate(t * 0.00006 * (k % 2 ? 1 : -1) + k * 0.12);
+      og.scale(1, sq);
+      og.beginPath();
+      og.arc(0, 0, rad, 0, Math.PI * 2);
+      og.strokeStyle = "rgba(255," + Math.round(lerp(90, 138, f)) + "," + Math.round(lerp(78, 120, f)) + "," + (0.55 - f * 0.5) + ")";
+      og.lineWidth = 1.6;
+      og.stroke();
+      og.restore();
+    }
+    var core = og.createRadialGradient(cx - base * 0.2, cy - base * 0.2, 0, cx, cy, base * 1.1);
+    core.addColorStop(0, "rgba(255,190,140,.95)");
+    core.addColorStop(0.5, "rgba(255,59,78,.85)");
+    core.addColorStop(1, "rgba(122,92,255,0)");
+    og.fillStyle = core;
+    og.beginPath();
+    og.arc(cx, cy, base * (1 + 0.04 * Math.sin(t * 0.002)), 0, Math.PI * 2);
+    og.fill();
+  }
+
+  /* Pinned story canvas */
+  var pinCv = $("pinCanvas"), pg = null, pinP = 0;
+  var steps = document.querySelectorAll(".step");
+  function drawPin(t){
+    if(!pg) pg = fit(pinCv);
+    var r = pinCv.getBoundingClientRect();
+    var W = r.width, H = r.height;
+    pg.clearRect(0, 0, W, H);
+    var n = 48, s = pinP * (steps.length - 1);
+    for(var i = 0; i < n; i++){
+      var u = i / (n - 1);
+      var x = W * (0.1 + 0.8 * u);
+      var phase = s * 1.4 + u * 6 + t * 0.001;
+      var y = H / 2 + Math.sin(phase) * H * 0.28 * (0.4 + 0.6 * Math.sin(s * 0.8 + u * 3));
+      var size = 2 + 10 * (0.5 + 0.5 * Math.cos(phase * 0.5));
+      var c = PAL[(i + Math.floor(s)) % PAL.length];
+      var grd = pg.createRadialGradient(x, y, 0, x, y, size * 3);
+      grd.addColorStop(0, "rgba(" + c + ",.95)");
+      grd.addColorStop(1, "rgba(" + c + ",0)");
+      pg.fillStyle = grd;
+      pg.beginPath();
+      pg.arc(x, y, size * 3, 0, Math.PI * 2);
+      pg.fill();
+    }
+  }
+
+  /* Feature visuals */
+  var vizA = $("vizA"), vizB = $("vizB"), ga = null, gb = null;
+  function drawWaves(ctx, W, H, t){
+    ctx.clearRect(0, 0, W, H);
+    for(var k = 0; k < 6; k++){
+      ctx.beginPath();
+      for(var x = 0; x <= W; x += 6){
+        var y = H * (0.25 + k * 0.1) + Math.sin(x * 0.012 + t * 0.0012 + k * 0.7) * (26 + k * 6) + Math.sin(x * 0.004 - t * 0.0007) * 18;
+        if(x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+      var g = ctx.createLinearGradient(0, 0, W, 0);
+      g.addColorStop(0, "rgba(255,59,78," + (0.08 + k * 0.03) + ")");
+      g.addColorStop(1, "rgba(122,92,255," + (0.08 + k * 0.03) + ")");
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
+  }
+  function drawBloom(ctx, W, H, t){
+    ctx.clearRect(0, 0, W, H);
+    for(var i = 0; i < 36; i++){
+      var a = i / 36 * Math.PI * 2 + t * 0.0004;
+      var rad = Math.min(W, H) * (0.12 + 0.28 * (0.5 + 0.5 * Math.sin(t * 0.0009 + i * 0.5)));
+      var x = W / 2 + Math.cos(a) * rad, y = H / 2 + Math.sin(a) * rad;
+      var c = PAL[i % PAL.length];
+      ctx.beginPath();
+      ctx.arc(x, y, 3 + 3 * Math.sin(t * 0.002 + i), 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(" + c + ",.75)";
+      ctx.fill();
+    }
+  }
+
+  /* Visibility checks so off-screen canvases skip work */
+  var inView = {vizA:false, vizB:false, pin:false};
+  var vio = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.target === vizA) inView.vizA = e.isIntersecting;
+      if(e.target === vizB) inView.vizB = e.isIntersecting;
+      if(e.target === pinCv) inView.pin = e.isIntersecting;
+    });
+  });
+  vio.observe(vizA); vio.observe(vizB); vio.observe(pinCv);
+
+  /* Main loop */
+  function frame(t){
+    if(!reduce || t < 50){
+      drawLiquid(t);
+      drawOrb(t);
+      if(inView.pin) drawPin(t);
+      if(inView.vizA){
+        if(!ga) ga = fit(vizA);
+        var a = vizA.getBoundingClientRect();
+        drawWaves(ga, a.width, a.height, t);
+      }
+      if(inView.vizB){
+        if(!gb) gb = fit(vizB);
+        var b = vizB.getBoundingClientRect();
+        drawBloom(gb, b.width, b.height, t);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* Scroll: liquid shift, pinned progress, step switching */
+  var pbar = $("pbar"), pinSection = $("process");
+  window.addEventListener("scroll", function(){
+    var max = document.documentElement.scrollHeight - innerHeight || 1;
+    lpT = scrollY / max;
+
+    var rect = pinSection.getBoundingClientRect();
+    var total = pinSection.offsetHeight - innerHeight || 1;
+    pinP = clamp(-rect.top / total, 0, 1);
+    pbar.style.width = (pinP * 100) + "%";
+    var idx = Math.min(steps.length - 1, Math.floor(pinP * steps.length));
+    steps.forEach(function(s, i){ s.classList.toggle("on", i === idx); });
+  }, {passive:true});
+
+  window.addEventListener("resize", function(){
+    resizeLiquid();
+    og = null; pg = null; ga = null; gb = null;
+  });
+
+  /* Marquee */
+  var words = ["Create","Launch","Grow","Design","Motion","Build","Ship","Scale"];
+  var html = words.map(function(w){ return "<span>" + w + "</span>"; }).join("");
+  $("track").innerHTML = html + html;
+
+  /* Reveal on scroll */
+  var rvio = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add("in"); rvio.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll(".rv").forEach(function(el){ rvio.observe(el); });
+
+  /* Card spotlight follows the pointer */
+  document.querySelectorAll(".card").forEach(function(c){
+    c.addEventListener("pointermove", function(e){
+      var r = c.getBoundingClientRect();
+      c.style.setProperty("--x", (e.clientX - r.left) + "px");
+      c.style.setProperty("--y", (e.clientY - r.top) + "px");
+    });
+  });
+
+  /* Inquiry form opens the visitor's email app */
+  $("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = $("email").value.trim();
+    if(!v) return;
+    $("msg").textContent = "Thanks! Your email app will open to send us your note.";
+    window.location.href = "mailto:" + EMAIL +
+      "?subject=" + encodeURIComponent("New project from " + v) +
+      "&body=" + encodeURIComponent("Hi Redcrdd, I'd like to start a project. My email is " + v + ".");
+  });
+
+  $("yr").textContent = new Date().getFullYear();
+  window.dispatchEvent(new Event("scroll"));
+})();
+</script>
+</body>
+  </html>
