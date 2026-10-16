@@ -138,7 +138,7 @@ function onS(){var y=scrollY,p=$("#v-home").classList.contains("on")?Math.min(y/
 addEventListener("scroll",onS,{passive:true});onS();
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.1});
 $$(".rv").forEach(function(el){io.observe(el)});
-async function sample(prompt) {
+async function askWorker(prompt) {
   const res = await fetch("https://redcrdd-ai.bhimm529.workers.dev/?q=" + encodeURIComponent(prompt));
   const data = await res.json();
   return { text: data.answer };
@@ -146,10 +146,10 @@ async function sample(prompt) {
 $("#go").onclick=async function(){
 var q=$("#q").value.trim();if((!q&&!img)||busy)return;if(!q)q="What is in this photo?";if(left()<=0){show("plans");return}
 var it={q:q,a:"Thinking...",t:Date.now()},o=mk(it);o.b.style.visibility="hidden";$("#feed").prepend(o.c);
-if(!sample){o.a.textContent="AI answers work when this page is opened inside claude.ai. Please open it there and try again.";return}
+if(!askWorker){o.a.textContent="AI answers work when this page is opened inside claude.ai. Please open it there and try again.";return}
 busy=true;$("#go").disabled=true;$("#q").value="";
 try{
-var r=await sample("You are Redcrdd's AI. Answer the person's question or thought clearly, honestly and briefly in plain text with no markdown. If it is questionable or sensitive, answer with care and facts. Reply in "+lname()+". Question: "+q,img?{cache:false,images:[img],onText:function(t){o.a.textContent=t.text}}:{cache:false,onText:function(t){o.a.textContent=t.text}});use();clearImg();
+var r=await askWorker("You are Redcrdd's AI. Answer the person's question or thought clearly, honestly and briefly in plain text with no markdown. If it is questionable or sensitive, answer with care and facts. Reply in "+lname()+". Question: "+q,img?{cache:false,images:[img],onText:function(t){o.a.textContent=t.text}}:{cache:false,onText:function(t){o.a.textContent=t.text}});use();clearImg();
 it.a=r.text;o.a.textContent=it.a;o.b.style.visibility="visible";hist.unshift(it);hist=hist.slice(0,50);sv("rc_h",hist);stats();
 }catch(e){o.a.textContent=(e&&e.code==="rate_limited")?"Too many questions. Wait a moment and try again.":"Couldn't get an answer. Please try again."}
 busy=false;$("#go").disabled=false;
