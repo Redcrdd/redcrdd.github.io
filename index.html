@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Redcrdd — Build your own website</title>
+<meta name="description" content="Redcrdd helps you build and publish your own website from beautiful templates.">
+<style>
+:root{--bg:#07070b;--fg:#f4f4f7;--mute:rgba(244,244,247,.64);--line:rgba(255,255,255,.12);--glass:rgba(255,255,255,.06);--a:#ff3b4e;--b:#ff8a5b;--c:#7a5cff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* Low-res liquid layer */
+#liquid{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;filter:blur(30px);opacity:.6}
+
+main,header,footer{position:relative;z-index:1}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 24px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);background:rgba(7,7,11,.3);border-bottom:1px solid transparent;transition:background .4s,border-color .4s}
+nav.solid{background:rgba(7,7,11,.7);border-color:var(--line)}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;gap:10px;align-items:center}
+.logo i{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 18px var(--a)}
+.links{display:flex;gap:26px;font-size:14px;color:var(--mute)}
+.links a:hover{color:var(--fg)}
+@media(max-width:780px){.links{display:none}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 22px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.btn.primary{background:linear-gradient(120deg,var(--a),var(--b));color:#fff;box-shadow:0 14px 40px rgba(255,59,78,.35)}
+.btn.ghost{background:rgba(255,255,255,.07);border-color:var(--line);color:var(--fg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+
+/* Hero with background photos */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:130px 0 80px;overflow:hidden}
+.slides{position:absolute;inset:0;z-index:0;pointer-events:none}
+.slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity 1.8s ease,transform 9s linear}
+.slide.on{opacity:.34;transform:scale(1)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,7,11,.2),rgba(7,7,11,.85) 85%,var(--bg));z-index:1;pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);border:1px solid var(--line);padding:7px 14px;border-radius:999px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+h1{font-size:clamp(44px,7.4vw,96px);line-height:.98;letter-spacing:-.045em;font-weight:800;margin:24px 0}
+h1 em{font-style:normal;background:linear-gradient(120deg,var(--a),var(--b),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(16px,1.6vw,19px);color:var(--mute);max-width:560px;line-height:1.6}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+
+/* Marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:22px 0}
+.track{display:flex;gap:56px;width:max-content;animation:scroll 30s linear infinite;font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--mute)}
+.track span{white-space:nowrap}
+.track span:nth-child(odd){color:var(--fg)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* Sections */
+section.block{padding:130px 0}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.h2{font-size:clamp(34px,5vw,62px);font-weight:800;letter-spacing:-.04em;line-height:1.02;margin:16px 0 18px}
+.sub{color:var(--mute);font-size:18px;line-height:1.6;max-width:620px}
+
+/* Template row (sideways scroll) */
+.row{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 24px 30px;margin:0 -24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.row::-webkit-scrollbar{display:none}
+.tcard{flex:0 0 min(340px,82vw);scroll-snap-align:start;border-radius:26px;padding:24px;border:1px solid var(--line);background:rgba(255,255,255,.05);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:14px;transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s}
+.tcard:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.28)}
+.sw{height:150px;border-radius:18px}
+.tcard h3{font-size:22px;letter-spacing:-.02em}
+.tcard p{color:var(--mute);font-size:15px;line-height:1.55;flex:1}
+.tcard .btn{width:100%}
+
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px}
+.step{padding:30px;border-radius:26px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.step .n{font-size:13px;color:var(--mute);font-weight:700;letter-spacing:.1em}
+.step h3{font-size:24px;letter-spacing:-.02em;margin:34px 0 10px}
+.step p{color:var(--mute);line-height:1.6;font-size:15px}
+@media(max-width:900px){.steps{grid-template-columns:1fr}}
+
+/* Sponsored */
+.ad{position:relative;border-radius:34px;overflow:hidden;border:1px solid var(--line);min-height:440px;display:flex;align-items:flex-end;background:linear-gradient(135deg,#2a0f1e,#0f0f2a)}
+.ad img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.ad::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,7,11,.95),rgba(7,7,11,.1) 70%)}
+.ad .in{position:relative;z-index:2;padding:40px;max-width:620px}
+.badge{display:inline-block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);border:1px solid var(--line);padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);margin-bottom:16px}
+.ad h2{font-size:clamp(30px,4.6vw,52px);letter-spacing:-.035em;line-height:1.05;font-weight:800}
+.ad p{color:var(--mute);margin:14px 0 24px;line-height:1.6}
+
+/* Contact */
+.cta{border-radius:40px;padding:90px 40px;text-align:center;border:1px solid var(--line);background:radial-gradient(900px 400px at 50% 0%,rgba(255,59,78,.22),transparent 60%),radial-gradient(700px 400px at 100% 100%,rgba(122,92,255,.22),transparent 60%),rgba(255,255,255,.03)}
+.cta h2{font-size:clamp(36px,6vw,74px);font-weight:800;letter-spacing:-.045em;line-height:1}
+.cta p{color:var(--mute);margin:20px auto 30px;max-width:520px;line-height:1.6}
+
+footer{padding:50px 0;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+
+/* Reveal */
+.rv{opacity:0;transform:translateY(42px);filter:blur(8px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1),filter 1s ease}
+.rv.in{opacity:1;transform:none;filter:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}.slide{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="liquid"></canvas>
+
+<nav id="nav">
+  <a class="logo" href="#top"><i></i>Redcrdd</a>
+  <div class="links">
+    <a href="#templates">Templates</a>
+    <a href="#how">How it works</a>
+    <a href="#sponsor">Sponsored</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a class="btn primary" href="builder/">Start building</a>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="slides" id="slides"></div>
+    <div class="wrap">
+      <span class="kicker rv">● Build it yourself, no code needed</span>
+      <h1 class="rv d1">Your website,<br><em>built by you.</em></h1>
+      <p class="lead rv d2">Pick a template, change the words and colors, and publish a real website in minutes. Free to start, and yours to keep.</p>
+      <div class="ctas rv d3">
+        <a class="btn primary" href="builder/">Start building</a>
+        <a class="btn ghost" href="#templates">See templates</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div class="track" id="track"></div></div>
+
+  <section class="block" id="templates">
+    <div class="wrap">
+      <div class="rv">
+        <div class="eyebrow">Templates</div>
+        <h2 class="h2">Start from something<br>that already looks good.</h2>
+        <p class="sub">Swipe sideways to browse. Every template opens in the builder, ready to edit.</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="row rv d1">
+        <article class="tcard">
+          <div class="sw" style="background:linear-gradient(135deg,#ff3b4e,#7a5cff)"></div>
+          <h3>Landing page</h3>
+          <p>A bold first impression with one clear call to action.</p>
+          <a class="btn primary" href="builder/">Use this template</a>
+        </article>
+        <article class="tcard">
+          <div class="sw" style="background:linear-gradient(135deg,#ff8a5b,#ff3b4e)"></div>
+          <h3>Portfolio</h3>
+          <p>Show your best work in a clean grid that loads fast on phones.</p>
+          <a class="btn primary" href="builder/">Use this template</a>
+        </article>
+        <article class="tcard">
+          <div class="sw" style="background:linear-gradient(135deg,#0f2a3a,#1e6fb0)"></div>
+          <h3>Small business</h3>
+          <p>Services, opening hours, and a contact section, all in one page.</p>
+          <a class="btn primary" href="builder/">Use this template</a>
+        </article>
+        <article class="tcard">
+          <div class="sw" style="background:linear-gradient(135deg,#2a1d0f,#d19b3a)"></div>
+          <h3>Blank canvas</h3>
+          <p>Start from nothing and build exactly what you imagine.</p>
+          <a class="btn primary" href="builder/">Start blank</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how" style="padding-top:40px">
+    <div class="wrap">
+      <div class="rv">
+        <div class="eyebrow">How it works</div>
+        <h2 class="h2">Three steps to live.</h2>
+      </div>
+      <div class="steps">
+        <div class="step rv d1"><div class="n">01</div><h3>Choose</h3><p>Pick a template or start blank. Nothing is locked, so change anything you like.</p></div>
+        <div class="step rv d2"><div class="n">02</div><h3>Edit</h3><p>Change text, colors, and images. The preview updates as you type.</p></div>
+        <div class="step rv d3"><div class="n">03</div><h3>Publish</h3><p>Download your single HTML file and upload it to any free host to go live.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="sponsor" style="padding-top:40px">
+    <div class="wrap">
+      <div class="ad rv">
+        <img id="adImg" alt="" src="photos/ad.jpg">
+        <div class="in">
+          <span class="badge">Sponsored</span>
+          <h2>Your brand, in front of creators.</h2>
+          <p>Reach people who are building their first website. Ads are clearly labeled and shown in a calm, simple format.</p>
+          <a class="btn primary" href="mailto:ads@example.com?subject=Advertising%20on%20Redcrdd">Advertise with us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact" style="padding-top:40px">
+    <div class="wrap">
+      <div class="cta rv">
+        <div class="eyebrow">Ready when you are</div>
+        <h2 style="margin-top:14px">Build your site<br>today.</h2>
+        <p>Free to start. Questions? Write to us and we will reply within two working days.</p>
+        <div class="ctas" style="justify-content:center">
+          <a class="btn primary" href="builder/">Start building</a>
+          <a class="btn ghost" href="mailto:hello@example.com">Email us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="logo"><i></i>Redcrdd</div>
+    <div>© <span id="yr"></span> Redcrdd. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var nav = $("nav");
+
+  /* 1. Low-resolution liquid background (cheap on phones) */
+  var cv = $("liquid"), cx = cv.getContext("2d");
+  var W = 0, H = 0;
+  function size(){
+    W = cv.width  = Math.max(120, Math.round(innerWidth / 6));
+    H = cv.height = Math.max(120, Math.round(innerHeight / 6));
+  }
+  size();
+  window.addEventListener("resize", size);
+
+  var sp = 0, spT = 0;
+  var COL = [[255,59,78],[255,138,91],[122,92,255],[255,184,77]];
+  var last = 0, FRAME = 1000 / 24;
+
+  function draw(ts){
+    requestAnimationFrame(draw);
+    if(document.hidden || ts - last < FRAME) return;
+    last = ts;
+    sp += (spT - sp) * 0.05;
+    var t = ts / 1000;
+    cx.clearRect(0, 0, W, H);
+    for(var i = 0; i < COL.length; i++){
+      var c = COL[i];
+      var x = W * (0.5 + 0.36 * Math.sin(t * 0.12 + i * 1.7));
+      var y = H * (0.5 + 0.3 * Math.cos(t * 0.1 + i * 2.3)) + sp * H * (i % 2 ? 0.4 : -0.4);
+      var r = Math.min(W, H) * (0.5 + 0.06 * Math.sin(t * 0.3 + i));
+      var g = cx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, "rgba(" + c + ",0.5)");
+      g.addColorStop(1, "rgba(" + c + ",0)");
+      cx.fillStyle = g;
+      cx.fillRect(0, 0, W, H);
+    }
+  }
+  requestAnimationFrame(draw);
+
+  /* 2. Background photos in the hero (only shows images that load) */
+  var PHOTOS = ["photos/1.jpg", "photos/2.jpg", "photos/3.jpg"];
+  var slides = $("slides"), ready = [], idx = 0;
+
+  function showNext(){
+    if(!ready.length) return;
+    ready.forEach(function(im){ im.classList.remove("on"); });
+    ready[idx % ready.length].classList.add("on");
+    idx++;
+  }
+
+  PHOTOS.forEach(function(src){
+    var probe = new Image();
+    probe.onload = function(){
+      var im = document.createElement("img");
+      im.className = "slide";
+      im.alt = "";
+      im.src = src;
+      slides.appendChild(im);
+      ready.push(im);
+      if(ready.length === 1) showNext();
+    };
+    probe.src = src;
+  });
+  setInterval(showNext, 6500);
+
+  /* Sponsor image: hide cleanly if missing */
+  $("adImg").onerror = function(){ this.remove(); };
+
+  /* 3. Scroll: nav background and liquid drift */
+  window.addEventListener("scroll", function(){
+    nav.classList.toggle("solid", scrollY > 40);
+    var max = document.documentElement.scrollHeight - innerHeight || 1;
+    spT = scrollY / max;
+  }, {passive:true});
+
+  /* 4. Reveal sections as they enter the screen */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
+
+  /* 5. Marquee words */
+  var words = ["Build","Publish","Customize","Launch","Grow","Create","Share"];
+  var html = words.map(function(w){ return "<span>" + w + "</span>"; }).join("");
+  $("track").innerHTML = html + html;
+
+  $("yr").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
